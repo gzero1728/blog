@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec babel-node server/server.js delay --2"
+    "dev": "nodemon --exec babel-node server/server.js delay --2 --ignore './clinet'"
   },
   "author": "",
   "license": "ISC",
