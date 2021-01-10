@@ -1,66 +1,76 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, Form, FormGroup, Input, Label, Modal, ModalBody, ModalHeader, NavLink } from "reactstrap";
-import { useDispatch, useSelector } from "react-redux"
-import { CLEAR_ERROR_REQUEST, LOGIN_REQUEST } from "../../redux/types"
+import { CLEAR_ERROR_REQUEST, REGISTER_REQUEST } from "../../redux/types";
 
-// redux, redux-saga를 통해서 상태관리
-const LoginModal = () => {
+const RegisterModal = () => {
   const [modal, setModal] = useState(false);
-  const [localMsg, setLocalMsg] = useState('');
   const [form, setValue] = useState({
+    name: "",
     email: "",
     password: ""
-  });
-  // redux hooks 
+  })
+  const [localMsg, setLocalMsg] = useState("");
+  const { errorMsg } = useSelector((state) => state.auth)
+
+  // useDispatch: dispatch를 날리는 것
   const dispatch = useDispatch();
-  // reducer state의 auth를 선택(selector)해서 그 중 errorMsg만 불러옴
-  const { errorMsg } = useSelector((state) => state.auth);
-  // errorsg 변화가 있을 때 setLocalMsg를 실행
-  useEffect(() => {
-    try {
-      setLocalMsg(errorMsg)
-    } catch (e) {
-      console.log(e)
-    }
-  }, [errorMsg])
 
   const handleToggle = () => {
     dispatch({
       type: CLEAR_ERROR_REQUEST
-    })
+    });
     setModal(!modal)
   }
+
+  useEffect(() => {
+    try {
+      setLocalMsg(errorMsg)
+    } catch (e) {
+      console.error(e)
+    }
+  }, [errorMsg])
 
   const onChange = (e) => {
     setValue({
       ...form,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     })
   }
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const { email, password } = form;
-    const user = { email, password };
-    console.log(user);
+    const { name, email, password } = form;
+    const newUser = { name, email, password };
+    console.log(newUser, "newUser");
     dispatch({
-      type: LOGIN_REQUEST,
-      payload: user
+      type: REGISTER_REQUEST,
+      payload: newUser
     })
   }
   return (
     <div>
       <NavLink onClick={handleToggle} href="#">
-        Login
-            </NavLink>
+        Register
+      </NavLink>
       <Modal isOpen={modal} toggle={handleToggle}>
         <ModalHeader toggle={handleToggle}>
-          Login
-                </ModalHeader>
+          Register
+        </ModalHeader>
         <ModalBody>
-          {localMsg ? <Alert color="danger">{localMsg}</Alert> : null}
+          {localMsg
+            ? <Alert color="danger"></Alert>
+            : null}
           <Form onSubmit={onSubmit}>
             <FormGroup>
+              <Label for="name">Name</Label>
+              <Input
+                type="text"
+                name="name"
+                id="name"
+                placeholder="Name"
+                onChange={onChange}
+              />
               <Label for="email">Email</Label>
               <Input
                 type="email"
@@ -77,9 +87,7 @@ const LoginModal = () => {
                 placeholder="Password"
                 onChange={onChange}
               />
-              <Button color="dark" style={{ marginTop: "2rem" }} block>
-                Login
-                            </Button>
+              <Button color="dark" className="mt-2" block>Register</Button>
             </FormGroup>
           </Form>
         </ModalBody>
@@ -88,4 +96,4 @@ const LoginModal = () => {
   )
 }
 
-export default LoginModal;
+export default RegisterModal;
