@@ -1,5 +1,6 @@
 import { CLEAR_ERROR_FAILURE, CLEAR_ERROR_REQUEST, CLEAR_ERROR_SUCCESS, LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS } from "../types"
 
+// 초기 상태 정의
 const initialState = {
     token: localStorage.getItem("token"),
     isAuthenticated: null,

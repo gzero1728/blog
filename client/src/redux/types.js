@@ -1,4 +1,4 @@
-// redux에서 쓰일 상태 타입(패턴) 정의
+// redux-saga action 타입 정의
 
 // LOGIN
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
