@@ -198,7 +198,7 @@ const postEditUploadAPI = (payload) => {
   if (token) {
     config.headers["x-auth-token"] = token;
   }
-  // config 앞에 payload가 있어야 const token=payload.token을 실행시킬 수 있다.
+  // payload가 앞에 있어야 const token=payload.token을 실행시킬 수 있다.
   return axios.post(`/api/post/${payload.id}/edit`, payload, config)
 }
 
@@ -209,6 +209,7 @@ function* postEditUpload(action) {
       type: POST_EDIT_UPLOADING_SUCCESS,
       payload: result.data
     })
+    yield put(push(`/post/${result.data._id}`))
   } catch (e) {
     yield put({
       type: POST_EDIT_UPLOADING_FAILURE,

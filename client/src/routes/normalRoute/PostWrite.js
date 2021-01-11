@@ -5,13 +5,26 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import { editorConfiguration } from "../../components/editor/EditorConfig"
 import MyInit from "../../components/editor/UploadAdapter";
+import { POST_UPLOADING_REQUEST } from "../../redux/types";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 const PostWrite = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const [form, setValues] = useState({ title: "", contents: "", fileUrl: "" })
   const dispatch = useDispatch();
+
+  const onSubmit = async (e) => {
+    await e.preventDefault();
+    const { title, contents, fileUrl, category } = form;
+    const token = localStorage.getItem("token")
+    const body = { title, contents, fileUrl, category, token }
+    dispatch({
+      type: POST_UPLOADING_REQUEST,
+      payload: body
+    })
+  }
 
   const onChange = (e) => {
     setValues({
@@ -60,16 +73,11 @@ const PostWrite = () => {
     }
   };
 
-  const onSubmit = async (e) => {
-    await e.preventDefault();
-    const { title, contents, fileUrl, category } = form;
-  }
-
   return (
     <div>
       {isAuthenticated
         ? (
-          <Form>
+          <Form onSubmit={onSubmit}>
             <FormGroup p className="mb-3">
               <Label for="title">Title</Label>
               <Input
