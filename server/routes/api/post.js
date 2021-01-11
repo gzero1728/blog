@@ -127,7 +127,7 @@ router.get("/:id", async (req, res, next) => {
 
 // [Comments Route]
 
-// @route    GET  api/post/comments
+// @route    GET  api/post/:id/comments
 // @desc     GET  All Comments
 // @access   public
 router.get("/:id/comments", async (req, res) => {
