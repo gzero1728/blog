@@ -9,6 +9,9 @@ import {
   POST_DETAIL_LOADING_SUCCESS,
   POST_DETAIL_LOADING_FAILURE,
   POST_DETAIL_LOADING_REQUEST,
+  POST_DELETE_SUCCESS,
+  POST_DELETE_FAILURE,
+  POST_DELETE_REQUEST
 } from "../types";
 import { all, call, fork, put, takeEvery } from "redux-saga/effects";
 import { push } from "connected-react-router";
@@ -106,12 +109,52 @@ function* watchLoadPostDetail() {
   yield takeEvery(POST_DETAIL_LOADING_REQUEST, loadPostDetail)
 }
 
+
+// @ Post Delete
+const deletePostAPI = (payload) => {
+  // delete 자격은 글쓴 사람만 할 수 있음
+  const config = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+  const token = payload.token
+
+  if (token) {
+    config.headers["x-auth-token"] = token;
+  }
+
+  return axios.delete(`/api/post/${payload}`, config)
+}
+
+function* deletePost(action) {
+  try {
+    const result = yield call(deletePostAPI, action.payload)
+    yield put({
+      type: POST_DELETE_SUCCESS,
+      payload: result.data
+    })
+    yield put(push("/"))
+  } catch (e) {
+    yield put({
+      type: POST_DELETE_FAILURE,
+      payload: e
+    })
+  }
+}
+
+function* watchDeletePost() {
+  yield takeEvery(POST_DELETE_REQUEST, deletePost)
+}
+
+
 // @ POST SAGA
 export default function* postSaga() {
   yield all([
     fork(watchLoadPosts),
     fork(watchUploadPosts),
-    fork(watchLoadPostDetail)
+    fork(watchLoadPostDetail),
+    fork(watchDeletePost)
   ])
 }
 
