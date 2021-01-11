@@ -5,6 +5,8 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import { editorConfiguration } from "../../components/editor/EditorConfig"
 import MyInit from "../../components/editor/UploadAdapter";
+import dotenv from "dotenv";
+dotenv.config();
 
 const PostWrite = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -19,8 +21,44 @@ const PostWrite = () => {
   }
 
   const getDataFromCKEditor = (event, editor) => {
-    console.log("editor")
-  }
+    const data = editor.getDate()
+    if (data && data.match("<img src=")) {
+      const whereImg_start = data.indexOf("<img src=")
+      let whrereImg_end = "";
+      let ext_name_find = "";
+      let result_Img_Url = "";
+      const ext_name = ["jpeg", "png", "jpg", "git"]
+
+      for (let i = 0; i < ext_name.length; i++) {
+        if (data.match(ext_name(i))) {
+          console.log(data.indexOf(`${ext_name[i]})`))
+          ext_name_find = ext_name[i]
+          whereImg_end = data.indexOf(`${ext_name[i]}`)
+        }
+      }
+      console.log(ext_name_find)
+      console.log(whereImg_end);
+
+      if (ext_name_find === "jpeg") {
+        result_Img_Url = data.substring(whereImg_start + 10, whrereImg_end + 4)
+      } else {
+        result_Img_Url = data.substring(whereImg_start + 10, whrereImg_end + 3)
+      }
+
+      console.log(result_Img_Url, "result_Img_Url")
+      setValues({
+        ...form,
+        fileUrl: result_Img_Url,
+        contents: data
+      })
+    } else {
+      setValues({
+        ...form,
+        fileUrl: process.env.REACT_APP_BASIC_IMAGE_URL,
+        contents: data
+      })
+    }
+  };
 
   const onSubmit = async (e) => {
     await e.preventDefault();
