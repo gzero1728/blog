@@ -69,7 +69,7 @@ router.post("/", auth, uploadS3.none(), async (req, res, next) => {
       title,
       contents,
       fildUrl,
-      creator,
+      creator: req.user.id,
       date: moment().format("YYYY-MM-DD hh:mm:ss")
     });
 
