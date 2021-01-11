@@ -48,7 +48,7 @@ const uploadPostAPI = (payload) => {
   if (token) {
     config.headers["x-auth-token"] = token;
   }
-  return axios.get("/api/post", payload, config)
+  return axios.post("/api/post", payload, config)
 }
 
 function* uploadPosts(action) {
@@ -60,6 +60,7 @@ function* uploadPosts(action) {
       type: POST_UPLOADING_SUCCESS,
       payload: result.data
     })
+    // /post/:id로 이동
     yield put(push(`/post/${result.data._id}`))
   } catch (e) {
     yield put({
