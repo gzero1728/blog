@@ -1,6 +1,3 @@
-import React, { Component } from 'react';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-
 import Essentials from "@ckeditor/ckeditor5-essentials/src/essentials";
 
 import Paragraph from "@ckeditor/ckeditor5-paragraph/src/paragraph";
@@ -50,27 +47,18 @@ import TextTransformation from "@ckeditor/ckeditor5-typing/src/texttransformatio
 import Indent from "@ckeditor/ckeditor5-indent/src/indent";
 
 import IndentBlock from "@ckeditor/ckeditor5-indent/src/indentblock";
+import "@ckeditor/ckeditor5-build-classic/build/translations/ko";
 
 /* import Base64UploadAdapter from "@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter"; */
 
 import SimpleUploadAdapter from "@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter";
 
-
-
-import "@ckeditor/ckeditor5-build-classic/build/translations/ko";
-
 import dotenv from "dotenv";
-
-
 
 dotenv.config();
 
-
-
 export const editorConfiguration = {
-
   plugins: [
-
     Essentials,
 
     Paragraph,
@@ -122,11 +110,9 @@ export const editorConfiguration = {
     TableToolbar,
 
     TextTransformation,
-
   ],
 
   toolbar: [
-
     "heading",
 
     "|",
@@ -178,15 +164,11 @@ export const editorConfiguration = {
     "undo",
 
     "redo",
-
   ],
 
   heading: {
-
     options: [
-
       {
-
         model: "paragraph",
 
         view: "p",
@@ -194,11 +176,9 @@ export const editorConfiguration = {
         title: "본문",
 
         class: "ck-heading_paragraph",
-
       },
 
       {
-
         model: "heading1",
 
         view: "h1",
@@ -206,11 +186,9 @@ export const editorConfiguration = {
         title: "헤더1",
 
         class: "ck-heading_heading1",
-
       },
 
       {
-
         model: "heading2",
 
         view: "h2",
@@ -218,11 +196,9 @@ export const editorConfiguration = {
         title: "헤더2",
 
         class: "ck-heading_heading2",
-
       },
 
       {
-
         model: "heading3",
 
         view: "h3",
@@ -230,17 +206,12 @@ export const editorConfiguration = {
         title: "헤더3",
 
         class: "ck-heading_heading3",
-
       },
-
     ],
-
   },
 
   fontSize: {
-
     options: [
-
       9,
 
       10,
@@ -280,29 +251,21 @@ export const editorConfiguration = {
       33,
 
       35,
-
     ],
-
   },
 
   alignment: {
-
     options: ["justify", "left", "center", "right"],
-
   },
 
   table: {
-
     contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
-
   },
 
   image: {
-
     resizeUnit: "px",
 
     toolbar: [
-
       "imageStyle:alignLeft",
 
       "imageStyle:full",
@@ -312,19 +275,14 @@ export const editorConfiguration = {
       "|",
 
       "imageTextAlternative",
-
     ],
 
     styles: ["full", "alignLeft", "alignRight"],
-
   },
 
   typing: {
-
     transformations: {
-
       remove: [
-
         "enDash",
 
         "emDash",
@@ -338,41 +296,25 @@ export const editorConfiguration = {
         "oneForth",
 
         "threeQuarters",
-
       ],
-
     },
-
   },
 
   language: "ko",
 
   simpleUpload: {
-
-    uploadUrl: `${process.env.REACT_APP_BASIC_SERVER_URL}/api/posts/image`,
-
-
+    uploadUrl: `${process.env.REACT_APP_BASIC_SERVER_URL}/api/post/image`,
 
     // Headers sent along with the XMLHttpRequest to the upload server.
 
     headers: {
-
       "X-CSRF-TOKEN": "CSFR-Token",
-
-
-
     },
-
   },
-
 };
 
-
-
 export const ReadOnly_Configuration = {
-
   toolbar: ["heading"],
 
   heading: {},
-
 };
