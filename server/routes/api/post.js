@@ -151,7 +151,7 @@ router.delete("/:id", auth, async (req, res) => {
 // @route    GET api/post/:id/edit
 // @desc     Edit post
 // @access   private
-router.get("/:id/edit", async (req, res, next) => {
+router.get("/:id/edit", auth, async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id)
       .populate("creator", "name")
@@ -164,7 +164,7 @@ router.get("/:id/edit", async (req, res, next) => {
 // @route    POST api/post/:id/edit
 // @desc     Edit post
 // @access   private
-router.post("/:id/edit", async (req, res, next) => {
+router.post("/:id/edit", auth, async (req, res, next) => {
   console.log(req, "api/post/:id/edit")
   const { body: { title, contents, fileUrl, id } } = req
   try {

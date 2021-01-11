@@ -11,7 +11,13 @@ import {
   POST_DETAIL_LOADING_REQUEST,
   POST_DELETE_SUCCESS,
   POST_DELETE_FAILURE,
-  POST_DELETE_REQUEST
+  POST_DELETE_REQUEST,
+  POST_EDIT_LOADING_SUCCESS,
+  POST_EDIT_LOADING_FAILURE,
+  POST_EDIT_LOADING_REQUEST,
+  POST_EDIT_UPLOADING_SUCCESS,
+  POST_EDIT_UPLOADING_FAILURE,
+  POST_EDIT_UPLOADING_REQUEST
 } from "../types";
 import { all, call, fork, put, takeEvery } from "redux-saga/effects";
 import { push } from "connected-react-router";
@@ -119,11 +125,9 @@ const deletePostAPI = (payload) => {
     }
   }
   const token = payload.token
-
   if (token) {
     config.headers["x-auth-token"] = token;
   }
-
   return axios.delete(`/api/post/${payload}`, config)
 }
 
@@ -148,13 +152,86 @@ function* watchDeletePost() {
 }
 
 
+// @ Post Edit Load
+const postEditLoadAPI = (payload) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+  const token = payload.token
+  if (token) {
+    config.headers["x-auth-token"] = token;
+  }
+  return axios.get(`/api/post/${payload.id}/edit`, config, payload)
+}
+
+function* postEditLoad(action) {
+  try {
+    const result = yield call(postEditLoadAPI, action.payload)
+    yield put({
+      type: POST_EDIT_LOADING_SUCCESS,
+      payload: result.data
+    })
+  } catch (e) {
+    yield put({
+      type: POST_EDIT_LOADING_FAILURE,
+      payload: e
+    })
+    yield put(push("/"))
+  }
+}
+
+function* watchPostEditLoad() {
+  yield takeEvery(POST_EDIT_LOADING_REQUEST, postEditLoad)
+}
+
+
+// @ Post Edit Upload
+const postEditUploadAPI = (payload) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+  const token = payload.token
+  if (token) {
+    config.headers["x-auth-token"] = token;
+  }
+  // config 앞에 payload가 있어야 const token=payload.token을 실행시킬 수 있다.
+  return axios.post(`/api/post/${payload.id}/edit`, payload, config)
+}
+
+function* postEditUpload(action) {
+  try {
+    const result = yield call(postEditUploadAPI, action.payload)
+    yield put({
+      type: POST_EDIT_UPLOADING_SUCCESS,
+      payload: result.data
+    })
+  } catch (e) {
+    yield put({
+      type: POST_EDIT_UPLOADING_FAILURE,
+      payload: e
+    })
+    yield put(push("/"))
+  }
+}
+
+function* watchPostEditUpload() {
+  yield takeEvery(POST_EDIT_UPLOADING_REQUEST, postEditUpload)
+}
+
+
 // @ POST SAGA
 export default function* postSaga() {
   yield all([
     fork(watchLoadPosts),
     fork(watchUploadPosts),
     fork(watchLoadPostDetail),
-    fork(watchDeletePost)
+    fork(watchDeletePost),
+    fork(watchPostEditLoad),
+    fork(watchPostEditUpload)
   ])
 }
 
