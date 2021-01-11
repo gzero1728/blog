@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { } from "react-helmet";
+import { Helmet } from "react-helmet";
 import {
   USER_LOADING_REQUEST,
   POST_DETAIL_LOADING_REQUEST,
@@ -8,11 +8,20 @@ import {
 } from "../../redux/types";
 import { Button, Col, Row } from "reactstrap";
 import { Link } from "react-router-dom"
+import { GrowingSpinner } from "../../components/spinner/Spinner";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPencilAlt,
+  faCommentDots,
+  faMouse
+} from "@fortawesome/free-solid-svg-icons";
 import CKEditor from "@ckeditor/ckeditor5-react";
+import BallonEditor from "@ckeditor/ckeditor5-editor-balloon/src/ballooneditor";
+import { editorConfiguration } from "../../components/editor/EditorConfig";
 
 const PostDetail = (req) => {
   const dispatch = useDispatch()
-  const { PostDetail, creatorID, loading, title } = useSelector((state) => state.post)
+  const { postDetail, creatorID, loading, title } = useSelector((state) => state.post)
   const { userId, userName } = useSelector((state) => state.auth)
 
   useEffect(() => {
@@ -24,7 +33,7 @@ const PostDetail = (req) => {
       type: USER_LOADING_REQUEST,
       payload: localStorage.getItem("token")
     })
-  })
+  }, [dispatch, req.match.params.dispatch])
 
   const onDeleteClick = () => {
     dispatch({
@@ -70,8 +79,63 @@ const PostDetail = (req) => {
     </>
   )
 
+  const Body = (
+    <>
+      {userId === creatorID ? EditButton : HomeButton};
+      <Row className="border-bottom border-top border-primary p-3 mb-3 justity-content-between">
+        {(() => {
+          if (postDetail && postDetail.creatorID) {
+            return (
+              <>
+                <div className="font-weight-bold text-big">
+                  <span className="mr-3">
+                    <Button color="info">
+                      {postDetail.category.categoryName}
+                    </Button>
+                  </span>
+                  {postDetail.title}
+                </div>
+                <div className="align-self-end">
+                  {postDetail.creator.name}
+                </div>
+              </>
+            )
+          }
+        })()}
+      </Row>
+      {postDetail && postDetail.comments ? (
+        <>
+          <div className="d-flex justify-content-end align-items-baseline small">
+            <FontAwesomeIcon icon={faPencilAlt} />
+            &nbsp;
+            <span>{postDetail.date}</span>
+            &nbsp;&nbsp;
+            <FontAwesomeIcon icon={faCommentDots} />
+            &nbsp;
+            <span>{postDetail.comments.length}</span>
+            &nbsp;&nbsp;
+            <FontAwesomeIcon icon={faMouse} />
+            &nbsp;
+            <span>{postDetail.views.length}</span>
+          </div>
+          <Row className="mb-3">
+            <CKEditor
+              editor={BallonEditor}
+              data={postDetail.contents}
+              config={editorConfiguration}
+              disabled="true"
+            />
+          </Row>
+        </>
+      ) : ""}
+    </>
+  )
+
   return (
-    <h1>PostDetail</h1>
+    <div>
+      <Helmet title={`POST | ${title}`} />
+      {loading === true ? GrowingSpinner : Body}
+    </div>
   )
 }
 
