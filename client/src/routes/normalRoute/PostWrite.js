@@ -24,7 +24,7 @@ const PostWrite = () => {
     const data = editor.getDate()
     if (data && data.match("<img src=")) {
       const whereImg_start = data.indexOf("<img src=")
-      let whrereImg_end = "";
+      let whereImg_end = "";
       let ext_name_find = "";
       let result_Img_Url = "";
       const ext_name = ["jpeg", "png", "jpg", "git"]
@@ -40,9 +40,9 @@ const PostWrite = () => {
       console.log(whereImg_end);
 
       if (ext_name_find === "jpeg") {
-        result_Img_Url = data.substring(whereImg_start + 10, whrereImg_end + 4)
+        result_Img_Url = data.substring(whereImg_start + 10, whereImg_end + 4)
       } else {
-        result_Img_Url = data.substring(whereImg_start + 10, whrereImg_end + 3)
+        result_Img_Url = data.substring(whereImg_start + 10, whereImg_end + 3)
       }
 
       console.log(result_Img_Url, "result_Img_Url")
